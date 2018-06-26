@@ -5320,7 +5320,10 @@ var balloon = {
           count: Array.isArray(source) ? source.length : 1,
           dest: destName
         },
-        icon: 'undo'
+        icon: 'undo',
+        iconAction: function() {
+          balloon._undoMove(source, destination, conflict, clone);
+        }
       },
       data: {
         id: balloon.id(source),
@@ -5368,6 +5371,95 @@ var balloon = {
           balloon.displayError(data);
         }
       }
+    });
+  },
+
+  /**
+   * undo a balloon.move
+   *
+   * params are the same as passed to balloon.move()
+   *
+   * @param   string|object|array source (moved elements)
+   * @param   string|object|array destination (the destination where source(s) have been moved to)
+   * @param   int conflict
+   * @param   bool clone
+   * @return  void
+   */
+  _undoMove: function(source, destination, conflict, clone) {
+    var requests = [];
+    var action;
+    var data;
+
+
+    if(!Array.isArray(source)) {
+      source = [source];
+    }
+
+    for(var i=0; i<source.length; i++) {
+      var src = source[i];
+
+      if(clone === true) {
+        action = 'delete';
+        data = {
+          id: balloon.id(src),
+        }
+      } else {
+        action = 'move';
+        data = {
+          id: balloon.id(src),
+          destid: balloon.id(src.parent),
+          conflict: conflict
+        }
+      }
+
+      var request = balloon.xmlHttpRequest({
+        url: balloon.base+'/nodes/'+action,
+        type: action === 'delete' ? 'DELETE' : 'POST',
+        dataType: 'json',
+        data: data,
+        complete: function() {
+          balloon.resetDom('multiselect');
+          balloon.deselectAll();
+        },
+        error: function(data) {
+          //TODO pixtron - error message
+          /*if(data.status === 400 && data.responseJSON && data.responseJSON.code === 19 && conflict !== 2) {
+            var body = data.responseJSON;
+            if(typeof(balloon.id(source)) == 'string') {
+              var nodes = [source];
+            } else {
+              var nodes = body;
+            }
+
+            var id   = [];
+            var list = i18next.t('prompt.merge');
+            list += '<ul>';
+
+            for(var i in nodes) {
+              id.push(nodes[i].id);
+              list += '<li>'+nodes[i].name+'</li>';
+            }
+
+            list   += '</ul>';
+
+            if(typeof(balloon.id(source)) === 'string') {
+              id = balloon.id(source);
+            }
+
+            balloon.promptConfirm(list, 'move', [id, destination, 2, clone]);
+          } else {
+            balloon.displayError(data);
+          }*/
+        }
+      });
+
+      requests.push(request);
+    }
+
+    $.when.apply($, requests).fail(function(data) {
+      //TODO pixtron - error message
+    }).always(function() {
+      balloon.refreshTree('/collections/children', {id: balloon.getCurrentCollectionId()});
     });
   },
 
