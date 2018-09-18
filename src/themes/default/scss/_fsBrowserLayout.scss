@@ -8,6 +8,8 @@
   overflow: hidden;
   z-index: 10;
 
+  @include menu-left-transition(all);
+
   #fs-layout-left {
     width: 100%;
   }
@@ -19,6 +21,13 @@
   #fs-layout-left,
   #fs-content {
     transition: width 0.3s ease-in-out;
+  }
+
+  @media screen and (max-width: $breakpointMenuVisible - 1px) {
+    .fs-menu-left-open & {
+      left: $menuLeftOpenWidth;
+      right: -1 * $menuLeftOpenWidth;
+    }
   }
 
   @media screen and (min-width: $breakpointPannelVisible) {
