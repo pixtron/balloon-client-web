@@ -16,14 +16,26 @@
   }
 
   #fs-layout-left-container {
+    $sidePaddingBig: 30px;
+
     padding: 0 10px;
     width: 100%;
     box-sizing: border-box;
 
     @media screen and (min-width: $breakpointMenuVisible) {
-      padding: 0 30px 0 90px;
+
+
+      padding: 0 $sidePaddingBig 0 ($menuLeftClosedWidth + $sidePaddingBig);
+      @include menu-left-transition(padding-left);
+    }
+
+    @media screen and (min-width: $breakpoinMenuSlide) {
+      .fs-menu-left-open & {
+        padding-left: $menuLeftOpenWidth + $sidePaddingBig;
+      }
     }
   }
+
 
   #fs-layout-left-inner {
     @include clearfix;

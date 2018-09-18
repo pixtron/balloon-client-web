@@ -33,7 +33,7 @@
       display: none;
     }
 
-    &.fs-menu-left-open {
+    .fs-menu-left-open & {
       .gr-i-arrowhead-w {
         display: block;
       }

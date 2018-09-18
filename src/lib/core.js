@@ -290,15 +290,12 @@ var balloon = {
 
     $('#fs-menu-left-toggl').off('click').on('click', function(event) {
       event.preventDefault();
-      var $menu = $('#fs-menu-left');
-      var $toggl = $('#fs-menu-left-toggl');
+      var $fs_namespace = $('#fs-namespace');
 
-      if($menu.hasClass('fs-menu-left-open')) {
-        $menu.removeClass('fs-menu-left-open');
-        $toggl.removeClass('fs-menu-left-open');
+      if($fs_namespace.hasClass('fs-menu-left-open')) {
+        $fs_namespace.removeClass('fs-menu-left-open');
       } else {
-        $menu.addClass('fs-menu-left-open');
-        $toggl.addClass('fs-menu-left-open');
+        $fs_namespace.addClass('fs-menu-left-open');
       }
     });
 
